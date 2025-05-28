@@ -1,0 +1,21 @@
+{
+  "name": "Day Calculator",
+  "short_name": "Calculator",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f0f4f8",
+  "theme_color": "#007bff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

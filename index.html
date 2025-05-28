@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Day Calculator</title>
+  
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#007bff" />
+
+  <style>
+    html, body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f4f8;
+      height: 100%;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 400px;
+      width: 90%;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input {
+      width: calc(100% - 2px);
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .reset-btn {
+      background-color: #6c757d;
+    }
+    .reset-btn:hover {
+      background-color: #5a6268;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #333;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Day Calculator</h2>
+    <label>Days:</label>
+    <input type="number" id="days" placeholder="Enter number of days" />
+    <label>Hours:</label>
+    <input type="number" id="hours" placeholder="Enter number of hours" />
+    <label>Minutes:</label>
+    <input type="number" id="minutes" placeholder="Enter number of minutes" />
+    <button onclick="calculateDate()">Calculate</button>
+    <button class="reset-btn" onclick="resetFields()">Reset</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateDate() {
+      const days = parseInt(document.getElementById('days').value) || 0;
+      const hours = parseInt(document.getElementById('hours').value) || 0;
+      const minutes = parseInt(document.getElementById('minutes').value) || 0;
+
+      const now = new Date();
+      const futureTime = new Date(now.getTime() + (days * 24 * 60 * 60 * 1000) + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000));
+
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      };
+      const datePart = futureTime.toLocaleDateString(undefined, options);
+
+      let hoursFormatted = futureTime.getHours();
+      const minutesFormatted = futureTime.getMinutes().toString().padStart(2, '0');
+      const ampm = hoursFormatted >= 12 ? 'PM' : 'AM';
+      hoursFormatted = hoursFormatted % 12;
+      hoursFormatted = hoursFormatted ? hoursFormatted : 12;
+
+      const timePart = `${hoursFormatted.toString().padStart(2, '0')}:${minutesFormatted} ${ampm}`;
+
+      document.getElementById('result').textContent = `It will be ${datePart} at ${timePart}`;
+    }
+
+    function resetFields() {
+      document.getElementById('days').value = '';
+      document.getElementById('hours').value = '';
+      document.getElementById('minutes').value = '';
+      document.getElementById('result').textContent = '';
+    }
+
+    // Scroll into view on input focus to handle keyboard overlay
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+      input.addEventListener('focus', () => {
+        setTimeout(() => {
+          input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      });
+    });
+
+    // Trigger calculateDate on Enter key press in minutes input
+    document.getElementById('minutes').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        calculateDate();
+      }
+    });
+
+    // Service Worker Registration
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker
+          .register("/service-worker.js")
+          .then(function (registration) {
+            console.log("ServiceWorker registered with scope:", registration.scope);
+          })
+          .catch(function (error) {
+            console.log("ServiceWorker registration failed:", error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
